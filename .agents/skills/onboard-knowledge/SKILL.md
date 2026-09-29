@@ -112,8 +112,9 @@ Record the date, commit, blob, result (`generated`, `skipped` or `failed`) and w
 
 - **Never:** block the audit on this step — a failed or skipped refresh is recorded and the session
   carries on; regenerate for a branch other than the default branch.
-- **Done when:** `knowledge-development` is out of scope; or the wiki was regenerated, found
-  current, skipped or failed — and the user has been told which.
+- **Done when:** the role is `product-owner` or `qa`, so this step does not apply; or, for
+  `tech-lead` and `full`, the wiki was regenerated, found current, skipped or failed — and the user
+  has been told which.
 
 ### 4. Read prior status
 Read `.agents/skills/knowledge/<skill>/onboarding-status.md` for each in-scope domain.
