@@ -94,3 +94,25 @@ ready.
   file means that domain has never been audited. Do not add empty stubs.
 - Absent, empty, or unreadable are equivalent: every artifact in that domain is `pending`.
 - The file is not an artifact. Never count it in coverage.
+
+### DeepWiki section (`knowledge-development` only)
+
+Below its artifact table, `knowledge-development`'s file carries the last DeepWiki refresh the
+onboarding agent ran for the repository — one row, rewritten each time.
+
+```markdown
+## DeepWiki
+
+| Generated | Commit | wiki.json blob | Result | Wiki |
+|---|---|---|---|---|
+| 2026-09-29 | `f0d752ff3a78` | `2d07ee156b56` | generated | https://<devin-host>/wiki/<owner>/<repo> |
+```
+
+- `Commit` is the default-branch commit the wiki was generated from; `wiki.json blob` is
+  `git rev-parse <commit>:.devin/wiki.json`, or `absent`. Both are the first 12 characters.
+- `Result` is `generated`, `skipped` (not running in Devin) or `failed` (with the error in the
+  closing message). A session regenerates when anything outside `.agents/` — `.devin/wiki.json`
+  included — has changed on the default branch since `Commit`, or the result is not `generated`.
+- Absent means onboarding has never refreshed the wiki; the next `tech-lead` or `full` session
+  regenerates it.
+- The section is not an artifact. Never count it in coverage.
