@@ -94,3 +94,25 @@ ready.
   file means that domain has never been audited. Do not add empty stubs.
 - Absent, empty, or unreadable are equivalent: every artifact in that domain is `pending`.
 - The file is not an artifact. Never count it in coverage.
+
+## DeepWiki status
+
+`deepwiki-status.md`, beside this README, records the last DeepWiki refresh the onboarding agent
+ran for the repository. It is one row, rewritten each time.
+
+```markdown
+# DeepWiki status
+
+> Maintained by the onboarding agent (`!onboarding`). Do not edit by hand.
+
+| Generated | Commit | wiki.json blob | Result | Wiki |
+|---|---|---|---|---|
+| 2026-09-29 | `f0d752ff3a78` | `2d07ee156b56` | generated | https://<devin-host>/wiki/<owner>/<repo> |
+```
+
+- `Commit` is the default-branch commit the wiki was generated from; `wiki.json blob` is
+  `git rev-parse <commit>:.devin/wiki.json`, or `absent`. Both are the first 12 characters.
+- `Result` is `generated`, `skipped` (not running in Devin) or `failed` (with the error in the
+  closing message). A session regenerates unless both values match and the result is `generated`.
+- Absent means the wiki has never been refreshed by onboarding; the next session regenerates it.
+- The file is not an artifact. Never count it in coverage.

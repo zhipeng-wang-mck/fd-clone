@@ -16,7 +16,7 @@ version: 1.0.0
 tags: [utility, onboarding, knowledge, audit, coverage, gitlab]
 harnesses: [claude, devin, gitlab-duo, codex, cursor]
 inputs: [the user's role, organization name, source documents the owner supplies]
-outputs: [updated onboarding-status.md per in-scope domain, one merge request, a closing coverage message]
+outputs: [updated onboarding-status.md per in-scope domain, deepwiki-status.md, one merge request, a closing coverage message]
 enterprise_tools: [GitLab]
 ---
 
@@ -83,7 +83,29 @@ missing: ask. State the confirmed role and its domains back to the user before g
   domains back to the user.
 - **Revisit if:** never. A different role is a different session.
 
-### 3. Read prior status
+### 3. Refresh DeepWiki
+DeepWiki is how the code itself gets documented, and it does not regenerate on its own when
+`.devin/wiki.json` or the code changes. This step keeps it current. It covers the whole repository,
+not a domain, so it runs whatever the role.
+
+Read `.agents/skills/knowledge/deepwiki-status.md`, then compare it with the default branch:
+`git rev-parse origin/<default>` for the commit, and `git rev-parse origin/<default>:.devin/wiki.json`
+for the `wiki.json` blob (`absent` if there is no file).
+
+- Both match the recorded row and its result is `generated` — skip regeneration, and say so.
+- Otherwise — the file is absent, either value differs, or the last result was not `generated` —
+  regenerate the wiki for this repository with Devin's wiki-generation tool (`devin_generate_wiki`).
+  Running `!onboarding` is the request to regenerate it. Wait for the tool to finish.
+- Not running in Devin, or the tool is unavailable — do not regenerate; the result is `skipped`.
+
+Record the date, commit, blob, result (`generated`, `skipped` or `failed`) and wiki link for step 9.
+
+- **Never:** block the audit on this step — a failed or skipped refresh is recorded and the session
+  carries on; regenerate for a branch other than the default branch.
+- **Done when:** the wiki was regenerated, found current, skipped or failed — and the user has been
+  told which.
+
+### 4. Read prior status
 Read `.agents/skills/knowledge/<skill>/onboarding-status.md` for each in-scope domain.
 
 **Absent, empty, or unreadable all mean the same thing: every artifact in that domain starts as
@@ -96,10 +118,10 @@ an error. Say so and carry on. Where the file does have rows, take their statuse
 - **Done when:** every in-scope artifact has a starting status — `done`, `n/a`, or `pending` — and
   you have said in your opening summary how many you are skipping. On a first run that is none.
 
-### 4. Build the gap list
+### 5. Build the gap list
 Gather three lists, in this order:
 
-1. **Prior** — the statuses from step 3.
+1. **Prior** — the statuses from step 4.
 2. **Expected** — read each in-scope `SKILL.md` and take its artifact table: filename, `★` flag,
    cadence, owner. That table is the only checklist. Audit what it declares and nothing else.
 3. **Present** — list each `reference/` folder, ignoring `README.md` and `onboarding-status.md`.
@@ -121,7 +143,7 @@ Where the table says to read:
   target with no number, a role with no named person. An empty template — headings with no content —
   is `MISSING`, not `THIN`.
 
-`NOT APPLICABLE` is only ever set by the owner confirming it in step 6, with a reason.
+`NOT APPLICABLE` is only ever set by the owner confirming it in step 7, with a reason.
 
 Then for every artifact graded:
 
@@ -138,7 +160,7 @@ Then for every artifact graded:
 - **Done when:** every in-scope artifact has a grade, and every grade except `MISSING` has its
   evidence.
 
-### 5. Tier the gaps
+### 6. Tier the gaps
 A `★` artifact that is not `DOCUMENTED` is always `BLOCKING`, without judgement. Tier the rest:
 
 - `BLOCKING` — *can an agent begin the task at all?* Without it the work is guesswork.
@@ -149,21 +171,21 @@ A `★` artifact that is not `DOCUMENTED` is always `BLOCKING`, without judgemen
 - **Done when:** every gap sits in one tier, ordered within its tier by how much the work depends on
   it — the gap that blocks the most downstream work first.
 
-### 6. Report and ask
+### 7. Report and ask
 Show coverage and the tiered gaps first, so the owner sees the shape of the ask. Then, in one
 grouped blocking question, request: the source document for each `MISSING` and `THIN` artifact; a
 newer document for anything flagged stale; and confirmation of each `NOT APPLICABLE` with its reason.
 
 Say that they may attach everything at once or a few at a time, and ask them to tell you when they
-have nothing further. That sentence is what lets step 7 know when to stop waiting.
+have nothing further. That sentence is what lets step 8 know when to stop waiting.
 
 - **Never:** ask about an out-of-scope domain, or about an artifact already `done` or `n/a`; ask one
   question at a time — an audit producing forty questions gets none answered.
 - **Done when:** the owner has answered, or has said they cannot supply something. "I don't have
   that" is a complete answer: record the gap and move on without pressing.
 
-### 7. Ingest the documents
-Ask once, in step 6 — never file by file. But **process each document as it arrives**, whether the
+### 8. Ingest the documents
+Ask once, in step 7 — never file by file. But **process each document as it arrives**, whether the
 owner attaches everything at once or a few at a time. Order does not matter, and one document's
 failure never holds up another.
 
@@ -205,42 +227,46 @@ For each document: resolve its target filename, convert it, then scrub it.
   that name what was removed. Record every redaction — file, line, category (`credential`,
   `connection string`, `hostname`, `IP address`, `personal identifier`) and placeholder — never the
   value. A credential that was real in the source is a **live secret**: tell the owner, recommend
-  rotating it at source, and carry it into step 8 and the closing message. Show the owner every
+  rotating it at source, and carry it into step 9 and the closing message. Show the owner every
   redaction and get explicit confirmation. If they ask for changes, apply exactly what they
   describe, show the full list again, and re-confirm. Change nothing else: no summarising,
   improving, or reorganising.
 
 **Re-grade every artifact this step touched.** A converted document is not automatically
-`DOCUMENTED` — apply the step 4 definitions again and it may still be `THIN`. Then apply the owner's
-step 6 answers: each confirmed `NOT APPLICABLE`, with its reason. These revised grades are the final
-ones, and they are what step 8 and step 9 use.
+`DOCUMENTED` — apply the step 5 definitions again and it may still be `THIN`. Then apply the owner's
+step 7 answers: each confirmed `NOT APPLICABLE`, with its reason. These revised grades are the final
+ones, and they are what step 9 and step 10 use.
 
 - **Takes:** the documents the owner attaches, in however many messages they arrive, and the artifact
-  tables from step 4.
+  tables from step 5.
 - **Never:** commit an unscrubbed file; transcribe a document whose conversion failed; edit or delete
   a `reference/` file the owner did not ask you to replace; let one failed conversion stop the others;
-  move to step 8 while the owner is still sending files; assume a converted document is `DOCUMENTED`.
+  move to step 9 while the owner is still sending files; assume a converted document is `DOCUMENTED`.
 - **Done when:** the owner has said they have nothing further, every document they sent is either
   converted, scrubbed, and confirmed — or recorded as a gap with the converter's error — and every
   artifact has its final grade.
-- **Revisit if:** another document arrives before step 8 opens the merge request — process it,
+- **Revisit if:** another document arrives before step 9 opens the merge request — process it,
   re-grade, and include it. Anything arriving after that is a new session.
 
-### 8. Write the changes
-Three writes, then one merge request.
+### 9. Write the changes
+Four writes, then one merge request.
 
 - **`SKILL.md`** — only in two cases: an unexpected document was added, so add a row to that skill's
   artifact table; or new reference content contradicts an instruction in the skill's `Workflow` or
   `Standards & references`, so correct it. Keep the section structure from
   `.agents/skills/AUTHORING_STANDARD.md`.
 - **`onboarding-status.md`** — per in-scope domain, to the format in
-  `.agents/skills/knowledge/README.md`. Map the **final** grade from step 7 directly: `DOCUMENTED` → `done`,
+  `.agents/skills/knowledge/README.md`. Map the **final** grade from step 8 directly: `DOCUMENTED` → `done`,
   `NOT APPLICABLE` → `n/a`, `THIN` and `MISSING` → `pending`. No judgement. Fill `Grade` with the
   final grade, `Note` with the `THIN` missing specific, the `MISSING` writing brief, the
   `NOT APPLICABLE` reason or the stale flag, and `Redactions` with every placeholder this session
   put into the artifact's file, marking live secrets. Never write a secret value. Rewrite the file
   whole, keeping rows this session did not work on with their cells unchanged. Create it if it does
   not exist.
+- **`deepwiki-status.md`** — at `.agents/skills/knowledge/deepwiki-status.md`, to the format in
+  `.agents/skills/knowledge/README.md`, with the values step 3 recorded. Write it whenever step 3
+  regenerated, skipped or failed; leave it untouched when the wiki was found current. Create it if it
+  does not exist.
 - **Merge request** — one, containing all of the above. Write the description with the
   `draft-merge-request-descriptions` skill.
 
@@ -250,27 +276,29 @@ keeping; dropping it means the next session asks again.
 
 - **Never:** restructure a skill, change its `id`, or edit an out-of-scope skill; write an
   out-of-scope domain's status file; commit to the default branch; merge the MR yourself; map a
-  step 4 grade that step 7 has since revised.
+  step 5 grade that step 8 has since revised.
 - **Done when:** one MR exists with every changed file — or nothing changed at all, in which case
   there is no MR and the report is the only deliverable.
 
-### 9. Deliver
+### 10. Deliver
 Post the closing message described under Output.
 
 - **Done when:** the message states the role, scope, result, coverage before and after, every
   redaction and live secret, the remaining gaps by tier, and the MR link when there is one — and
-  says plainly which gaps someone must still write up.
+  says plainly which gaps someone must still write up, and the DeepWiki result.
 
 ## Standards & references
 - Each in-scope `.agents/skills/knowledge/<skill>/SKILL.md` — the artifact table is the checklist.
-- [`.agents/skills/knowledge/README.md`](../knowledge/README.md) — the `onboarding-status.md` format, shared
-  with anything else that reads those files.
+- [`.agents/skills/knowledge/README.md`](../knowledge/README.md) — the `onboarding-status.md` and
+  `deepwiki-status.md` formats, shared with anything else that reads those files.
+- `.devin/wiki.json` — steers which pages DeepWiki generates.
 - `knowledge-source-converter` (UT-01) — document conversion.
 - `draft-merge-request-descriptions` — the MR description.
 - `.agents/skills/AUTHORING_STANDARD.md` — the structure any edited `SKILL.md` must keep.
 
 ## Output
-**In the repository:** the updated `onboarding-status.md` for each in-scope domain, plus any
+**In the repository:** the updated `onboarding-status.md` for each in-scope domain, the
+`deepwiki-status.md` when step 3 wrote one, plus any
 converted `reference/` files and `SKILL.md` edits, as one merge request.
 
 **In the session,** a closing message in this order:
@@ -287,7 +315,8 @@ converted `reference/` files and `SKILL.md` edits, as one merge request.
 5. Redactions per file: line, category and placeholder — never the value. Live secrets come first,
    under **Live secrets to rotate**, with the source document each appeared in.
 6. Remaining gaps by tier, numbered by priority under each tier's test question.
-7. The MR link, when there is one.
+7. DeepWiki: the step 3 result, with the commit it was generated from and the wiki link.
+8. The MR link, when there is one.
 
 There is no report file. Out-of-scope domains appear nowhere in the output.
 
