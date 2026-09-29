@@ -37,14 +37,15 @@ what a domain should hold — each knowledge skill's artifact table declares tha
 
 ## Inputs
 - **The user's role** — the only answer you genuinely need, because it is a scoping decision rather
-  than a fact. It fixes the domains in scope:
+  than a fact. Take it from the macro argument (`!onboarding <organization> <role>`) when one was
+  given; otherwise ask. It fixes the domains in scope:
 
-| Role | Domains in scope |
-| --- | --- |
-| Team lead / Product Owner | `knowledge-common`, `knowledge-product` |
-| Tech lead / Developer | `knowledge-development` |
-| QA lead / Tester | `knowledge-testing` |
-| Cross-functional / Full audit | all four |
+| Role | Macro argument | Domains in scope |
+| --- | --- | --- |
+| Team lead / Product Owner | `product-owner` | `knowledge-common`, `knowledge-product` |
+| Tech lead / Developer | `tech-lead` | `knowledge-development` |
+| QA lead / Tester | `qa` | `knowledge-testing` |
+| Cross-functional / Full audit | `full` | all four |
 
 - **Organization name**, for labelling the output. Take it from the macro argument when one was
   given; otherwise ask alongside the role.
@@ -70,12 +71,16 @@ cloned, so this is a precondition to check, not something you can arrange.
   blocker, having asked the user nothing.
 
 ### 2. Confirm scope
-Ask for the role, and for the organization name if the macro did not carry one, in one grouped
-question. State the confirmed role and its domains back to the user before grading anything.
+Take the organization name and role from the macro arguments when given. Ask only for what is
+still missing, in one grouped question. When the role is asked, say in that question that a session
+audits one role only, and that someone who holds several roles should pick Cross-functional / Full
+audit rather than run one session per role. A role argument that matches no row of the table is
+missing: ask. State the confirmed role and its domains back to the user before grading anything.
 
 - **Never:** widen the scope; audit a second role however the user asks; infer the role from a job
   title.
-- **Done when:** the user has confirmed one role, and you have named its domains back to them.
+- **Done when:** one role is confirmed — by macro argument or by answer — and you have named its
+  domains back to the user.
 - **Revisit if:** never. A different role is a different session.
 
 ### 3. Read prior status
@@ -174,6 +179,19 @@ For each document: resolve its target filename, convert it, then scrub it.
 - **Out-of-scope document** — if it belongs to a domain this session is not auditing, say so
   explicitly, confirm with the owner what they want done, and do not upload it. Never file a
   document into a domain outside the confirmed scope.
+- **Several documents for one artifact** — owners resend, revise and split documents in different
+  ways. Resolve which case applies before converting, and never merge two documents into one file:
+  - *Same artifact, later in this session* — the newer document replaces the earlier one unless the
+    owner says otherwise. Discard the earlier draft whole, including any redaction confirmation
+    still pending on it, and tell the owner which draft it replaced. Scrub and confirm the new one
+    from scratch; nothing carries over.
+  - *Identical to a document already processed* — say so and skip it.
+  - *Clearly partial* — an addendum, a single section, "plus this" — ask whether it replaces the
+    draft or is filed as its own topic under the unexpected-document rule above.
+  - *Artifact already `done` from an earlier session* — ask whether it replaces the committed file
+    before touching it.
+  - *One document covering several artifacts* — ask which single artifact it is for, file it there,
+    and grade the others on their own. Never split a document across files.
 - **Convert** — invoke the `knowledge-source-converter` skill (UT-01) with the `skill` tool and
   follow its workflow. Locate the attachment's path on disk first; the converter takes a filesystem
   path. Never convert by hand or reimplement it inline.
@@ -181,8 +199,14 @@ For each document: resolve its target filename, convert it, then scrub it.
   headers and footers, `CONFIDENTIAL` banners, `Page N`, PPTX `Slide N` labels, Excel metadata
   sheets. Replace every real secret, credential, token, connection string, internal hostname, IP
   address, and personal identifier with a placeholder — compliance documents, test environment
-  descriptions, and dev configs are the likeliest carriers. Show the owner every redaction and get
-  explicit confirmation. Change nothing else: no summarising, improving, or reorganising.
+  descriptions, and dev configs are the likeliest carriers. Use `<UPPER_SNAKE_CASE>` placeholders
+  that name what was removed. Record every redaction — file, line, category (`credential`,
+  `connection string`, `hostname`, `IP address`, `personal identifier`) and placeholder — never the
+  value. A credential that was real in the source is a **live secret**: tell the owner, recommend
+  rotating it at source, and carry it into step 8 and the closing message. Show the owner every
+  redaction and get explicit confirmation. If they ask for changes, apply exactly what they
+  describe, show the full list again, and re-confirm. Change nothing else: no summarising,
+  improving, or reorganising.
 
 **Re-grade every artifact this step touched.** A converted document is not automatically
 `DOCUMENTED` — apply the step 4 definitions again and it may still be `THIN`. Then apply the owner's
@@ -209,8 +233,12 @@ Three writes, then one merge request.
   `.agents/skills/AUTHORING_STANDARD.md`.
 - **`onboarding-status.md`** — per in-scope domain, to the format in
   `.agents/skills/knowledge/README.md`. Map the **final** grade from step 7 directly: `DOCUMENTED` → `done`,
-  `NOT APPLICABLE` → `n/a`, `THIN` and `MISSING` → `pending`. No judgement. Rewrite the file whole,
-  keeping rows this session did not work on. Create it if it does not exist.
+  `NOT APPLICABLE` → `n/a`, `THIN` and `MISSING` → `pending`. No judgement. Fill `Grade` with the
+  final grade, `Note` with the `THIN` missing specific, the `MISSING` writing brief, the
+  `NOT APPLICABLE` reason or the stale flag, and `Redactions` with every placeholder this session
+  put into the artifact's file, marking live secrets. Never write a secret value. Rewrite the file
+  whole, keeping rows this session did not work on with their cells unchanged. Create it if it does
+  not exist.
 - **Merge request** — one, containing all of the above. Write the description with the
   `draft-merge-request-descriptions` skill.
 
@@ -227,9 +255,9 @@ keeping; dropping it means the next session asks again.
 ### 9. Deliver
 Post the closing message described under Output.
 
-- **Done when:** the message states the role, scope, result, coverage before and after, the remaining
-  gaps by tier, and the MR link when there is one — and says plainly which gaps someone must still
-  write up.
+- **Done when:** the message states the role, scope, result, coverage before and after, every
+  redaction and live secret, the remaining gaps by tier, and the MR link when there is one — and
+  says plainly which gaps someone must still write up.
 
 ## Standards & references
 - Each in-scope `.agents/skills/knowledge/<skill>/SKILL.md` — the artifact table is the checklist.
@@ -254,8 +282,10 @@ converted `reference/` files and `SKILL.md` edits, as one merge request.
    `What's needed` is empty for `DOCUMENTED`, the missing specific for `THIN`, a one-line writing
    brief for `MISSING`, and the reason for `NOT APPLICABLE`.
 4. Files added or changed, each with the source document it came from.
-5. Remaining gaps by tier, numbered by priority under each tier's test question.
-6. The MR link, when there is one.
+5. Redactions per file: line, category and placeholder — never the value. Live secrets come first,
+   under **Live secrets to rotate**, with the source document each appeared in.
+6. Remaining gaps by tier, numbered by priority under each tier's test question.
+7. The MR link, when there is one.
 
 There is no report file. Out-of-scope domains appear nowhere in the output.
 
@@ -266,6 +296,9 @@ There is no report file. Out-of-scope domains appear nowhere in the output.
 - [ ] Every `NOT APPLICABLE` row carries its reason.
 - [ ] Every `★` gap is tiered `BLOCKING`.
 - [ ] Every committed file was scrubbed and the redactions confirmed.
+- [ ] Every redaction is in the closing message and the status file, live secrets flagged, and no
+      secret value written anywhere.
+- [ ] Every document superseded this session left nothing behind — no draft, no pending confirmation.
 - [ ] Every in-scope `onboarding-status.md` was rewritten, and none out of scope was touched.
 
 ## Anti-patterns

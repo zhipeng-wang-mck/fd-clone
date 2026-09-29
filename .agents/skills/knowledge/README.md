@@ -72,13 +72,23 @@ ready.
 
 > Maintained by the onboarding agent (`!onboarding`). Do not edit by hand.
 
-| Artifact | Status |
-|---|---|
-| product-roadmap.md | done |
-| user-journey-maps.md | n/a |
+| Artifact | Status | Grade | Note | Redactions |
+|---|---|---|---|---|
+| product-roadmap.md | pending | THIN | Themes have no target quarter | `<ROADMAP_TOOL_HOST>` (hostname) |
+| user-journey-maps.md | n/a | NOT APPLICABLE | CLI only, no end-user journeys | |
 ```
 
-- Exactly three values: `done`, `pending`, `n/a`.
+- `Status` has exactly three values: `done`, `pending`, `n/a`. It is the column readiness checks
+  read.
+- `Grade` is the final grade the last session gave: `DOCUMENTED`, `THIN`, `MISSING` or
+  `NOT APPLICABLE`.
+- `Note` is empty for `DOCUMENTED`; otherwise the `THIN` missing specific, the `MISSING` writing
+  brief, the `NOT APPLICABLE` reason, or a stale flag.
+- `Redactions` lists the placeholders in the artifact's `reference/` file, each with its category.
+  `credential, rotate` marks a live secret found in the source. Never a secret value. Entries stay
+  until the file is replaced.
+- A file with only `Artifact` and `Status` columns is still valid; the next onboarding session
+  rewrites it in the full format.
 - One row per artifact the skill's table declares, in the same order.
 - The template ships **no** status files. The first `!onboarding` session creates them, so an absent
   file means that domain has never been audited. Do not add empty stubs.
