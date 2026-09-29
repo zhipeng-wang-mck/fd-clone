@@ -59,7 +59,7 @@ Those tables are the only place that list lives — read them rather than a copy
 from the codebase rather than uploaded, so delivery work can start without a tech lead providing
 anything. Its artifacts hold only what the team *requires*, and not every team has constraints to
 state. For how that codebase documentation is generated, see
-[`../../.devin/README.md`](../../.devin/README.md).
+[`.devin/README.md`](../../../.devin/README.md).
 
 ## Onboarding status
 
