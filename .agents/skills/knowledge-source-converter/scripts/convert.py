@@ -22,6 +22,8 @@ PANDOC_READERS = {
     ".odt": "odt",
     ".rtf": "rtf",
     ".epub": "epub",
+    ".html": "html",
+    ".htm": "html",
     ".rst": "rst",
     ".org": "org",
     ".tex": "latex",
@@ -39,7 +41,7 @@ PANDOC_READERS = {
 }
 
 PASSTHROUGH = {".md", ".markdown"}
-CUSTOM = {".pdf", ".xlsx", ".xlsm", ".html", ".htm"}
+CUSTOM = {".pdf", ".xlsx", ".xlsm"}
 PANDOC_ARGS = ["--wrap=none", "--markdown-headings=atx"]
 
 
@@ -60,13 +62,6 @@ def to_markdown(path: Path) -> tuple[str, list[str]]:
         except ImportError:
             from pdf import pdf_to_markdown
         return pdf_to_markdown(path)
-
-    if suffix in {".html", ".htm"}:
-        try:
-            from .html_doc import html_to_markdown
-        except ImportError:
-            from html_doc import html_to_markdown
-        return html_to_markdown(path)
 
     if suffix in {".xlsx", ".xlsm"}:
         try:

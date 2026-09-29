@@ -45,8 +45,7 @@ inline, and do not use `.devin/knowledge_toolkit`.
 |---|---|
 | `.md`, `.markdown` | passthrough, no conversion |
 | `.docx`, `.pptx`, `.odt`, `.rtf`, `.epub` | pandoc |
-| `.html`, `.htm` | pandoc, after `scripts/html_doc.py` strips page chrome |
-| `.rst`, `.org`, `.tex` | pandoc |
+| `.html`, `.htm`, `.rst`, `.org`, `.tex` | pandoc |
 | `.adoc`, `.asciidoc`, `.ipynb`, `.csv`, `.tsv` | pandoc |
 | `.jira`, `.textile`, `.mediawiki`, `.typ`, `.txt` | pandoc |
 | `.pdf` | PyMuPDF (`scripts/pdf.py`) |
@@ -75,11 +74,7 @@ bundles the pandoc binary, alongside `pymupdf` and `openpyxl`.
    it is byte-identical on **every** page, or is exactly `CONFIDENTIAL` or `Page N` on its own
    line. Single-page PDFs get no repetition detection at all, and a real-world footer such as
    `Acme Corp | Confidential | Page 1 of 3` survives because the page number makes each
-   occurrence unique. HTML conversion drops `<header>`, `<nav>`, `<footer>`, `<aside>`,
-   scripts and styles, plus any element whose class, id or role marks it as header, footer,
-   navigation, breadcrumb or sidebar chrome, and unwraps layout `<div>`/`<span>` wrappers; each
-   dropped element is listed in the notes with its text, so check none of it was content.
-   Always expect the caller to still have chrome to strip.
+   occurrence unique. Always expect the caller to still have chrome to strip.
 5. **Hand the draft back without editing it.** Return the path and let the calling workflow
    decide on naming, remaining chrome, redaction and committing.
 6. **On failure, report and stop.** Show the converter's error and the supported-format list.
@@ -91,7 +86,6 @@ bundles the pandoc binary, alongside `pymupdf` and `openpyxl`.
 - `scripts/setup.py` — builds the venv from `requirements.txt`; resolves paths relative to
   itself, so the skill folder works from any location.
 - `scripts/pdf.py`, `scripts/xlsx.py` — the custom extractors pandoc cannot cover.
-- `scripts/html_doc.py` — strips HTML page chrome before pandoc converts the body.
 - `reference/devin-deployment.md` — how the converter is provisioned in a Devin environment.
 - The caller's own rules on secrets and placeholders always apply to the output; this skill
   does not enforce them.
