@@ -3,7 +3,7 @@ name: knowledge-source-converter
 description: >
   Use this skill whenever a source document must become Markdown before an agent can read,
   grade, or commit it — a team's architecture Word file, a compliance PDF, a test-policy
-  spreadsheet, a roadmap deck. Trigger it on any `.docx`, `.pdf`, `.xlsx`, `.pptx`, `.html`
+  spreadsheet, a roadmap deck. Trigger it on any `.docx`, `.pdf`, `.xlsx`, `.pptx`
   or other supported file the user provides, and whenever a workflow needs a Markdown draft
   of something that is not Markdown yet. It runs a bundled, offline converter — pandoc for
   most formats, PyMuPDF for PDF, openpyxl for Excel — and returns a Markdown draft with
@@ -45,7 +45,7 @@ inline, and do not use `.devin/knowledge_toolkit`.
 |---|---|
 | `.md`, `.markdown` | passthrough, no conversion |
 | `.docx`, `.pptx`, `.odt`, `.rtf`, `.epub` | pandoc |
-| `.html`, `.htm`, `.rst`, `.org`, `.tex` | pandoc |
+| `.rst`, `.org`, `.tex` | pandoc |
 | `.adoc`, `.asciidoc`, `.ipynb`, `.csv`, `.tsv` | pandoc |
 | `.jira`, `.textile`, `.mediawiki`, `.typ`, `.txt` | pandoc |
 | `.pdf` | PyMuPDF (`scripts/pdf.py`) |

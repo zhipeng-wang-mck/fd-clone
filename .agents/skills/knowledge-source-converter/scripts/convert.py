@@ -22,8 +22,6 @@ PANDOC_READERS = {
     ".odt": "odt",
     ".rtf": "rtf",
     ".epub": "epub",
-    ".html": "html",
-    ".htm": "html",
     ".rst": "rst",
     ".org": "org",
     ".tex": "latex",

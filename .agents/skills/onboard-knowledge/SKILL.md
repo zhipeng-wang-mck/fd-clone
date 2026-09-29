@@ -194,7 +194,9 @@ For each document: resolve its target filename, convert it, then scrub it.
     and grade the others on their own. Never split a document across files.
 - **Convert** — invoke the `knowledge-source-converter` skill (UT-01) with the `skill` tool and
   follow its workflow. Locate the attachment's path on disk first; the converter takes a filesystem
-  path. Never convert by hand or reimplement it inline.
+  path. Never convert by hand or reimplement it inline. If the converter rejects the format, tell
+  the owner that format is not supported, list the formats its error names, and ask for the document
+  in one of them; if they cannot supply one, record the gap with the converter's error.
 - **Scrub — blocking, no exceptions.** Drop conversion chrome the converter left: repeated PDF
   headers and footers, `CONFIDENTIAL` banners, `Page N`, PPTX `Slide N` labels, Excel metadata
   sheets. Replace every real secret, credential, token, connection string, internal hostname, IP
