@@ -16,7 +16,7 @@ version: 1.0.0
 tags: [utility, onboarding, knowledge, audit, coverage, gitlab]
 harnesses: [claude, devin, gitlab-duo, codex, cursor]
 inputs: [the user's role, organization name, source documents the owner supplies]
-outputs: [updated onboarding-status.md per in-scope domain, deepwiki-status.md, one merge request, a closing coverage message]
+outputs: [updated onboarding-status.md per in-scope domain, one merge request, a closing coverage message]
 enterprise_tools: [GitLab]
 ---
 
@@ -85,15 +85,17 @@ missing: ask. State the confirmed role and its domains back to the user before g
 
 ### 3. Refresh DeepWiki
 DeepWiki is how the code itself gets documented, and it does not regenerate on its own when
-`.devin/wiki.json` or the code changes. This step keeps it current. It covers the whole repository,
-not a domain, so it runs whatever the role.
+`.devin/wiki.json` or the code changes. The code is the development domain's concern, so this step
+runs only when `knowledge-development` is in scope (`tech-lead` or `full`); for any other role, skip
+it and say nothing about DeepWiki.
 
-Read `.agents/skills/knowledge/deepwiki-status.md`, then compare it with the default branch:
+Read the `## DeepWiki` section of `.agents/skills/knowledge/knowledge-development/onboarding-status.md`,
+then compare it with the default branch:
 `git rev-parse origin/<default>` for the commit, and `git rev-parse origin/<default>:.devin/wiki.json`
 for the `wiki.json` blob (`absent` if there is no file).
 
 - Both match the recorded row and its result is `generated` — skip regeneration, and say so.
-- Otherwise — the file is absent, either value differs, or the last result was not `generated` —
+- Otherwise — the section is absent, either value differs, or the last result was not `generated` —
   regenerate the wiki for this repository with Devin's wiki-generation tool (`devin_generate_wiki`).
   Running `!onboarding` is the request to regenerate it. Wait for the tool to finish.
 - Not running in Devin, or the tool is unavailable — do not regenerate; the result is `skipped`.
@@ -102,8 +104,8 @@ Record the date, commit, blob, result (`generated`, `skipped` or `failed`) and w
 
 - **Never:** block the audit on this step — a failed or skipped refresh is recorded and the session
   carries on; regenerate for a branch other than the default branch.
-- **Done when:** the wiki was regenerated, found current, skipped or failed — and the user has been
-  told which.
+- **Done when:** `knowledge-development` is out of scope; or the wiki was regenerated, found
+  current, skipped or failed — and the user has been told which.
 
 ### 4. Read prior status
 Read `.agents/skills/knowledge/<skill>/onboarding-status.md` for each in-scope domain.
@@ -249,7 +251,7 @@ ones, and they are what step 9 and step 10 use.
   re-grade, and include it. Anything arriving after that is a new session.
 
 ### 9. Write the changes
-Four writes, then one merge request.
+Three writes, then one merge request.
 
 - **`SKILL.md`** — only in two cases: an unexpected document was added, so add a row to that skill's
   artifact table; or new reference content contradicts an instruction in the skill's `Workflow` or
@@ -263,15 +265,14 @@ Four writes, then one merge request.
   put into the artifact's file, marking live secrets. Never write a secret value. Rewrite the file
   whole, keeping rows this session did not work on with their cells unchanged. Create it if it does
   not exist.
-- **`deepwiki-status.md`** — at `.agents/skills/knowledge/deepwiki-status.md`, to the format in
-  `.agents/skills/knowledge/README.md`, with the values step 3 recorded. Write it whenever step 3
-  regenerated, skipped or failed; leave it untouched when the wiki was found current. Create it if it
-  does not exist.
+  In `knowledge-development`'s file, also write the `## DeepWiki` section with the values step 3
+  recorded, whenever step 3 regenerated, skipped or failed; keep it unchanged when the wiki was found
+  current or step 3 did not run.
 - **Merge request** — one, containing all of the above. Write the description with the
   `draft-merge-request-descriptions` skill.
 
-Write the status files whenever this session changed any grade — including when the owner supplied no
-documents but confirmed an artifact as `NOT APPLICABLE`. That confirmation is a decision worth
+Write the status files whenever this session changed any grade or the DeepWiki section — including
+when the owner supplied no documents but confirmed an artifact as `NOT APPLICABLE`. That confirmation is a decision worth
 keeping; dropping it means the next session asks again.
 
 - **Never:** restructure a skill, change its `id`, or edit an out-of-scope skill; write an
@@ -285,20 +286,19 @@ Post the closing message described under Output.
 
 - **Done when:** the message states the role, scope, result, coverage before and after, every
   redaction and live secret, the remaining gaps by tier, and the MR link when there is one — and
-  says plainly which gaps someone must still write up, and the DeepWiki result.
+  says plainly which gaps someone must still write up, and the DeepWiki result when step 3 ran.
 
 ## Standards & references
 - Each in-scope `.agents/skills/knowledge/<skill>/SKILL.md` — the artifact table is the checklist.
-- [`.agents/skills/knowledge/README.md`](../knowledge/README.md) — the `onboarding-status.md` and
-  `deepwiki-status.md` formats, shared with anything else that reads those files.
+- [`.agents/skills/knowledge/README.md`](../knowledge/README.md) — the `onboarding-status.md` format,
+  including its DeepWiki section, shared with anything else that reads those files.
 - `.devin/wiki.json` — steers which pages DeepWiki generates.
 - `knowledge-source-converter` (UT-01) — document conversion.
 - `draft-merge-request-descriptions` — the MR description.
 - `.agents/skills/AUTHORING_STANDARD.md` — the structure any edited `SKILL.md` must keep.
 
 ## Output
-**In the repository:** the updated `onboarding-status.md` for each in-scope domain, the
-`deepwiki-status.md` when step 3 wrote one, plus any
+**In the repository:** the updated `onboarding-status.md` for each in-scope domain, plus any
 converted `reference/` files and `SKILL.md` edits, as one merge request.
 
 **In the session,** a closing message in this order:
@@ -315,7 +315,7 @@ converted `reference/` files and `SKILL.md` edits, as one merge request.
 5. Redactions per file: line, category and placeholder — never the value. Live secrets come first,
    under **Live secrets to rotate**, with the source document each appeared in.
 6. Remaining gaps by tier, numbered by priority under each tier's test question.
-7. DeepWiki: the step 3 result, with the commit it was generated from and the wiki link.
+7. DeepWiki, when step 3 ran: its result, the commit it was generated from and the wiki link.
 8. The MR link, when there is one.
 
 There is no report file. Out-of-scope domains appear nowhere in the output.

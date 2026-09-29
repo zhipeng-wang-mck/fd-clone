@@ -95,15 +95,13 @@ ready.
 - Absent, empty, or unreadable are equivalent: every artifact in that domain is `pending`.
 - The file is not an artifact. Never count it in coverage.
 
-## DeepWiki status
+### DeepWiki section (`knowledge-development` only)
 
-`deepwiki-status.md`, beside this README, records the last DeepWiki refresh the onboarding agent
-ran for the repository. It is one row, rewritten each time.
+Below its artifact table, `knowledge-development`'s file carries the last DeepWiki refresh the
+onboarding agent ran for the repository — one row, rewritten each time.
 
 ```markdown
-# DeepWiki status
-
-> Maintained by the onboarding agent (`!onboarding`). Do not edit by hand.
+## DeepWiki
 
 | Generated | Commit | wiki.json blob | Result | Wiki |
 |---|---|---|---|---|
@@ -114,5 +112,6 @@ ran for the repository. It is one row, rewritten each time.
   `git rev-parse <commit>:.devin/wiki.json`, or `absent`. Both are the first 12 characters.
 - `Result` is `generated`, `skipped` (not running in Devin) or `failed` (with the error in the
   closing message). A session regenerates unless both values match and the result is `generated`.
-- Absent means the wiki has never been refreshed by onboarding; the next session regenerates it.
-- The file is not an artifact. Never count it in coverage.
+- Absent means onboarding has never refreshed the wiki; the next `tech-lead` or `full` session
+  regenerates it.
+- The section is not an artifact. Never count it in coverage.
