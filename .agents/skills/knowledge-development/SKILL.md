@@ -87,7 +87,7 @@ direction.
 - `reference/architecture-constraints.md` — what must not be built, and why.
 - `reference/coding-standards.md` — conventions, unit-test standards, MR rules.
 - `reference/dev-environment-setup.md` — access, configs, local run.
-- `../README.md` — which knowledge skill to load for a given task, and the conventions
+- `../knowledge/README.md` — which knowledge skill to load for a given task, and the conventions
   shared by all four knowledge skills.
 - **knowledge-common** compliance and security standards, and org-mandatory security rules,
   take precedence over any team convention here.

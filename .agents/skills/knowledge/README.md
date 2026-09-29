@@ -6,10 +6,10 @@ actual knowledge lives in that skill's `reference/` folder.
 
 | ID | Skill | Holds |
 |---|---|---|
-| KN-01 | [knowledge-common](./knowledge-common) | Application overview; the compliance and security standards that bind it. |
-| KN-02 | [knowledge-product](./knowledge-product) | Product roadmap; existing user journey maps. |
-| KN-03 | [knowledge-testing](./knowledge-testing) | Test environments, test policies, test patterns and tools. |
-| KN-04 | [knowledge-development](./knowledge-development) | Architecture constraints, coding standards, dev environment. Rules only — how the code is *currently* built is read from the codebase. |
+| KN-01 | [knowledge-common](../knowledge-common) | Application overview; the compliance and security standards that bind it. |
+| KN-02 | [knowledge-product](../knowledge-product) | Product roadmap; existing user journey maps. |
+| KN-03 | [knowledge-testing](../knowledge-testing) | Test environments, test policies, test patterns and tools. |
+| KN-04 | [knowledge-development](../knowledge-development) | Architecture constraints, coding standards, dev environment. Rules only — how the code is *currently* built is read from the codebase. |
 
 ## Which knowledge to load
 

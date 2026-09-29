@@ -66,7 +66,7 @@ coding standards live in **knowledge-development**; roadmap and user journeys in
 - `reference/application-overview.md` — what the application is and who owns it.
 - `reference/compliance-and-security-standards.md` — the binding compliance and security
   standards; these take precedence over team conventions and generic idiom.
-- `../README.md` — which knowledge skill to load for a given task, and the conventions
+- `../knowledge/README.md` — which knowledge skill to load for a given task, and the conventions
   shared by all four knowledge skills.
 - Org-mandatory security rules always apply in addition to what is documented here,
   whichever skill enforces them.

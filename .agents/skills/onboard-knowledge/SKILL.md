@@ -89,7 +89,7 @@ DeepWiki is how the code itself gets documented, and it does not regenerate on i
 runs only when `knowledge-development` is in scope (`tech-lead` or `full`); for any other role, skip
 it and say nothing about DeepWiki.
 
-Read the `## DeepWiki` section of `.agents/skills/knowledge/knowledge-development/onboarding-status.md`
+Read the `## DeepWiki` section of `.agents/skills/knowledge-development/onboarding-status.md`
 and list what has changed on the default branch since its recorded commit, outside `.agents/`:
 
 ```bash
@@ -117,7 +117,7 @@ Record the date, commit, blob, result (`generated`, `skipped` or `failed`) and w
   has been told which.
 
 ### 4. Read prior status
-Read `.agents/skills/knowledge/<skill>/onboarding-status.md` for each in-scope domain.
+Read `.agents/skills/<skill>/onboarding-status.md` for each in-scope domain.
 
 **Absent, empty, or unreadable all mean the same thing: every artifact in that domain starts as
 `pending`.** A first onboarding hits this for every in-scope domain — that is the expected state, not
@@ -298,7 +298,7 @@ Post the closing message described under Output.
   says plainly which gaps someone must still write up, and the DeepWiki result when step 3 ran.
 
 ## Standards & references
-- Each in-scope `.agents/skills/knowledge/<skill>/SKILL.md` — the artifact table is the checklist.
+- Each in-scope `.agents/skills/<skill>/SKILL.md` — the artifact table is the checklist.
 - [`.agents/skills/knowledge/README.md`](../knowledge/README.md) — the `onboarding-status.md` format,
   including its DeepWiki section, shared with anything else that reads those files.
 - `.devin/wiki.json` — steers which pages DeepWiki generates.

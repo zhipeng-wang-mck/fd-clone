@@ -72,7 +72,7 @@ sit with the coding standards in **knowledge-development**; acceptance intent co
 - `reference/test-environment-description.md` — where tests run and with what data.
 - `reference/test-policies.md` — what is mandatory and the bar to pass.
 - `reference/test-patterns-and-tools.md` — how tests are written and executed here.
-- `../README.md` — which knowledge skill to load for a given task, and the conventions
+- `../knowledge/README.md` — which knowledge skill to load for a given task, and the conventions
   shared by all four knowledge skills.
 - Compliance constraints on test data from **knowledge-common** take precedence.
 

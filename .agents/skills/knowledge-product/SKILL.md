@@ -70,7 +70,7 @@ compliance constraints in **knowledge-common**.
 - `reference/product-roadmap.md` — the current roadmap; treat items as intent, not
   commitment, unless marked committed.
 - `reference/user-journey-maps.md` — the as-is user journeys.
-- `../README.md` — which knowledge skill to load for a given task, and the conventions
+- `../knowledge/README.md` — which knowledge skill to load for a given task, and the conventions
   shared by all four knowledge skills.
 - Application-wide compliance constraints from **knowledge-common** still apply to any
   product change.
