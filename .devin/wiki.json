@@ -3,6 +3,14 @@
     {
       "content": "This wiki is the descriptive source of truth for how this application is currently built: structure, flows, dependencies, contracts and configuration. Document what exists in the code, never what ought to exist, and never imply that something existing is something approved.",
       "author": "Agentic SDLC template"
+    },
+    {
+      "content": "Accuracy: name only files, modules, functions, types, flags and settings that exist in the code, and cite the file each one is in. Read a file in full before summarising it. Describe what the code does, not what comments, READMEs or other documents claim; where they disagree, follow the code and note the discrepancy. When a section of a page does not apply, say so in one sentence instead of listing everything that is absent.",
+      "author": "Agentic SDLC template"
+    },
+    {
+      "content": "Scope: document the application and its build and release tooling. Agent and AI tooling folders such as .agents/ and .devin/ are not part of the application; do not describe their contents as application behaviour or as rules the code enforces. If a significant area of the code is not covered by any page, document it in the closest page rather than omitting it.",
+      "author": "Agentic SDLC template"
     }
   ],
   "pages": [
@@ -13,7 +21,7 @@
     },
     {
       "title": "Architecture",
-      "purpose": "Document the architectural shape of the system: the services or components it comprises, the responsibility of each, the boundaries between them, and the deployment topology they run in. Include an architecture diagram. Describe the boundaries that exist in the code; do not judge whether they are correct or assess whether a dependency should be allowed.",
+      "purpose": "Document the architectural shape of the system: the services or components it comprises, the responsibility of each, the boundaries between them, the deployment topology they run in, and the concurrency or runtime model (processes, threads, async runtimes, workers, queues) including any ordering or delivery guarantees. Include an architecture diagram. Describe the boundaries that exist in the code; do not judge whether they are correct or assess whether a dependency should be allowed.",
       "parent": "Overview"
     },
     {
@@ -23,7 +31,7 @@
     },
     {
       "title": "Data Flow / Processing Flow",
-      "purpose": "Document how data moves through the system end to end: entry points (HTTP requests, events, scheduled jobs, batch inputs), the synchronous and asynchronous hops between components, the queues or topics involved, and where data comes to rest. Include a sequence or flow diagram for the primary path, and describe the significant error, retry and compensation paths.",
+      "purpose": "Document how data moves through the system end to end: entry points (HTTP requests, events, scheduled jobs, batch inputs, command-line invocations, files), the synchronous and asynchronous hops between components, the queues, topics or channels involved, the decision points along the way (validation, matching, filtering, routing) with the order they are applied in and their precedence and defaults, and where data comes to rest or leaves the system. Include a sequence or flow diagram for the primary path, and describe the significant error, retry and compensation paths on that path; general error handling belongs to the Error Handling & Observability page.",
       "parent": "Architecture"
     },
     {
@@ -38,27 +46,32 @@
     },
     {
       "title": "APIs / Interfaces",
-      "purpose": "Document every interface this repository exposes and consumes: REST or gRPC endpoints, their request and response shapes, status codes and error model, event and message schemas, and how versioning is implemented. Derive this from the OpenAPI/Swagger, protobuf or schema files in the repository and link to them. Where no specification file exists, derive it from the handler code and state that it was inferred from code.",
+      "purpose": "Document every interface this repository exposes and consumes. For services: REST, GraphQL or gRPC endpoints, their request and response shapes, status codes and error model, event and message schemas, and how versioning is implemented. For command-line tools and libraries: every command, flag and positional argument with its default, exit codes, public library APIs, and file formats read or written. Derive this from OpenAPI/Swagger, protobuf, schema files or argument definitions in the repository and link to them. Where no specification exists, derive it from the handler or parser code and state that it was inferred from code. List every item; do not sample.",
       "parent": "Overview"
     },
     {
-      "title": "Authentication / Security",
-      "purpose": "Document the authentication and authorization mechanisms as implemented: how callers are identified, where tokens or sessions are validated, how authorization decisions are made and enforced, and how secrets and cryptographic material are obtained at runtime. Name the middleware, filters or guards involved and link to them. Describe the mechanism only; never include secret values. Delete this page if the repository has no authentication or authorization logic of its own.",
+      "title": "Security",
+      "purpose": "Document the security controls as implemented. Cover each that exists: how callers are authenticated and where tokens or sessions are validated; how authorization decisions are made and enforced; input validation and rejection rules; output encoding and injection defences (HTML/XSS, SQL, shell and command, terminal, path traversal); CSRF, CORS, security headers and rate limiting; how subprocesses are spawned and their arguments built; how secrets and cryptographic material are obtained at runtime; and supply-chain controls in the build (dependency pinning, automated updates, CI permissions, artifact signing or attestation). Name the middleware, filters, guards or functions involved and link to them, and reference any security policy file. Describe the mechanism only; never include secret values. Delete this page only if none of these controls exist.",
       "parent": "Overview"
     },
     {
-      "title": "Deployment / Infrastructure",
-      "purpose": "Document how this repository is built, packaged and deployed: the CI/CD pipeline stages, the container or artifact build, the environments it deploys to, the infrastructure-as-code that defines its runtime, and the health, readiness and observability hooks it exposes. Derive this from the pipeline definitions, Dockerfiles and IaC present in the repository. Delete this page if deployment is defined entirely outside this repository.",
+      "title": "Error Handling & Observability",
+      "purpose": "Document how the application handles and surfaces failures as implemented: the error types it defines, where errors are raised, caught, wrapped or translated, how they propagate across component boundaries, what callers receive (error responses, status codes, exit codes, messages), retry, timeout and fallback behaviour, and signal, cancellation and shutdown handling. Then document observability: logging (library, levels, format and destination), metrics, distributed tracing and correlation IDs, and error-reporting or APM integrations, naming the libraries and the code that configures them. If there is no logging, metrics or tracing, say so in one sentence.",
+      "parent": "Overview"
+    },
+    {
+      "title": "Build, Release & Deployment",
+      "purpose": "Document how this repository is built, released and deployed: every CI/CD job and stage in order from trigger to publish, the container or artifact build, how versions are bumped and releases are cut, which release steps are automated and which are manual, the registries, stores or package managers artifacts are published to, the environments it deploys to, the infrastructure-as-code that defines its runtime, and the health and readiness hooks it exposes. Derive this from pipeline definitions, Dockerfiles, IaC, release scripts and release checklists in the repository. Delete this page if build and deployment are defined entirely outside this repository.",
       "parent": "Overview"
     },
     {
       "title": "Configuration",
-      "purpose": "Document how this application is configured: the configuration files and their precedence, the environment variables and what each one controls, feature flags and their defaults, and which settings differ between environments. List configuration keys by name with their purpose and default, never their real values.",
+      "purpose": "Document how this application is configured: the configuration files it reads at build time and at runtime (including per-user and per-directory files) and their precedence, the environment variables and what each one controls, runtime and compile-time feature flags and their defaults, and which settings differ between environments or platforms. List configuration keys by name with their purpose and default, never their real values.",
       "parent": "Overview"
     },
     {
       "title": "Unit Testing",
-      "purpose": "Document the test suites present in this repository: the frameworks and runners in use, where tests live and how they are named, how fixtures, mocks and test data are provided, and the commands that execute them. Describe testing as it exists. Coverage thresholds and mandatory test types are policy and belong to the knowledge-testing skill, not this page. Delete this page if the repository has no meaningful test suite yet.",
+      "purpose": "Document the test suites present in this repository: the frameworks and runners in use, where tests live (separate test directories and tests inline in source files) and how they are named, how fixtures, mocks and test data are provided, tests that need a specific platform, service or privilege, and the commands that execute them. Describe testing as it exists. Coverage thresholds and mandatory test types are policy and belong to the knowledge-testing skill, not this page. Delete this page if the repository has no meaningful test suite yet.",
       "parent": "Overview"
     }
   ]
