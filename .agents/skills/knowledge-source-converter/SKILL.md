@@ -60,11 +60,11 @@ bundles the pandoc binary, alongside `pymupdf` and `openpyxl`.
    transcribing the document by hand.
 2. **Ensure the environment is ready.** The venv belongs in the environment build, not in
    every session — see `reference/devin-deployment.md`. Check whether
-   `skills/knowledge-source-converter/.venv` exists and only bootstrap it if it is missing:
-   `python skills/knowledge-source-converter/scripts/setup.py`
+   `.agents/skills/knowledge-source-converter/.venv` exists and only bootstrap it if it is missing:
+   `python .agents/skills/knowledge-source-converter/scripts/setup.py`
 3. **Convert to the requested path.** Run from the repo root:
-   - Linux/macOS: `skills/knowledge-source-converter/.venv/bin/python skills/knowledge-source-converter/scripts/convert.py <source> --out <target>`
-   - Windows: `skills\knowledge-source-converter\.venv\Scripts\python.exe skills\knowledge-source-converter\scripts\convert.py <source> --out <target>`
+   - Linux/macOS: `.agents/skills/knowledge-source-converter/.venv/bin/python .agents/skills/knowledge-source-converter/scripts/convert.py <source> --out <target>`
+   - Windows: `.agents\skills\knowledge-source-converter\.venv\Scripts\python.exe .agents\skills\knowledge-source-converter\scripts\convert.py <source> --out <target>`
 
    Use `--stdout` instead of `--out` when the caller wants the text without writing a file.
 4. **Report what the converter dropped, and assume chrome remains.** The script prints the

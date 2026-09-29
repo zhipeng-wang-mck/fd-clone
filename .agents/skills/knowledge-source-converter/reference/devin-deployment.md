@@ -22,14 +22,14 @@ re-run when dependencies change.
 
 ```yaml
 maintenance: |
-  python3 skills/knowledge-source-converter/scripts/setup.py
+  python3 .agents/skills/knowledge-source-converter/scripts/setup.py
 
 knowledge:
   - name: knowledge-source-converter
     contents: |
       Convert a source document to markdown:
-      skills/knowledge-source-converter/.venv/bin/python \
-        skills/knowledge-source-converter/scripts/convert.py <source> --out <target>
+      .agents/skills/knowledge-source-converter/.venv/bin/python \
+        .agents/skills/knowledge-source-converter/scripts/convert.py <source> --out <target>
 ```
 
 `initialize` is for runtimes and system packages; `maintenance` is where `pip install` and

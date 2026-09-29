@@ -53,7 +53,7 @@ what a domain should hold — each knowledge skill's artifact table declares tha
 ## Workflow
 
 ### 1. Find the knowledge repository
-Look through the repositories cloned into this session for one containing `skills/knowledge/`. That
+Look through the repositories cloned into this session for one containing `.agents/skills/knowledge/`. That
 folder is the fingerprint. Sessions boot with the organization's configured repositories already
 cloned, so this is a precondition to check, not something you can arrange.
 
@@ -79,7 +79,7 @@ question. State the confirmed role and its domains back to the user before gradi
 - **Revisit if:** never. A different role is a different session.
 
 ### 3. Read prior status
-Read `skills/knowledge/<skill>/onboarding-status.md` for each in-scope domain.
+Read `.agents/skills/knowledge/<skill>/onboarding-status.md` for each in-scope domain.
 
 **Absent, empty, or unreadable all mean the same thing: every artifact in that domain starts as
 `pending`.** A first onboarding hits this for every in-scope domain — that is the expected state, not
@@ -206,9 +206,9 @@ Three writes, then one merge request.
 - **`SKILL.md`** — only in two cases: an unexpected document was added, so add a row to that skill's
   artifact table; or new reference content contradicts an instruction in the skill's `Workflow` or
   `Standards & references`, so correct it. Keep the section structure from
-  `skills/AUTHORING_STANDARD.md`.
+  `.agents/skills/AUTHORING_STANDARD.md`.
 - **`onboarding-status.md`** — per in-scope domain, to the format in
-  `skills/knowledge/README.md`. Map the **final** grade from step 7 directly: `DOCUMENTED` → `done`,
+  `.agents/skills/knowledge/README.md`. Map the **final** grade from step 7 directly: `DOCUMENTED` → `done`,
   `NOT APPLICABLE` → `n/a`, `THIN` and `MISSING` → `pending`. No judgement. Rewrite the file whole,
   keeping rows this session did not work on. Create it if it does not exist.
 - **Merge request** — one, containing all of the above. Write the description with the
@@ -232,12 +232,12 @@ Post the closing message described under Output.
   write up.
 
 ## Standards & references
-- Each in-scope `skills/knowledge/<skill>/SKILL.md` — the artifact table is the checklist.
-- [`skills/knowledge/README.md`](../knowledge/README.md) — the `onboarding-status.md` format, shared
+- Each in-scope `.agents/skills/knowledge/<skill>/SKILL.md` — the artifact table is the checklist.
+- [`.agents/skills/knowledge/README.md`](../knowledge/README.md) — the `onboarding-status.md` format, shared
   with anything else that reads those files.
 - `knowledge-source-converter` (UT-01) — document conversion.
 - `draft-merge-request-descriptions` — the MR description.
-- `skills/AUTHORING_STANDARD.md` — the structure any edited `SKILL.md` must keep.
+- `.agents/skills/AUTHORING_STANDARD.md` — the structure any edited `SKILL.md` must keep.
 
 ## Output
 **In the repository:** the updated `onboarding-status.md` for each in-scope domain, plus any
