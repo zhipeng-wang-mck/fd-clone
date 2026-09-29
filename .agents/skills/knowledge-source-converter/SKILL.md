@@ -74,7 +74,9 @@ bundles the pandoc binary, alongside `pymupdf` and `openpyxl`.
    it is byte-identical on **every** page, or is exactly `CONFIDENTIAL` or `Page N` on its own
    line. Single-page PDFs get no repetition detection at all, and a real-world footer such as
    `Acme Corp | Confidential | Page 1 of 3` survives because the page number makes each
-   occurrence unique. Always expect the caller to still have chrome to strip.
+   occurrence unique. Always expect the caller to still have chrome to strip. A PDF's title
+   survives as a `# ` heading only when the source carries one — a running header that opens
+   page 1, otherwise the PDF metadata title; with neither, no title is written.
 5. **Hand the draft back without editing it.** Return the path and let the calling workflow
    decide on naming, remaining chrome, redaction and committing.
 6. **On failure, report and stop.** Show the converter's error and the supported-format list.
