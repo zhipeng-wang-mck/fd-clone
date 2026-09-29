@@ -111,7 +111,8 @@ onboarding agent ran for the repository — one row, rewritten each time.
 - `Commit` is the default-branch commit the wiki was generated from; `wiki.json blob` is
   `git rev-parse <commit>:.devin/wiki.json`, or `absent`. Both are the first 12 characters.
 - `Result` is `generated`, `skipped` (not running in Devin) or `failed` (with the error in the
-  closing message). A session regenerates unless both values match and the result is `generated`.
+  closing message). A session regenerates when anything outside `.agents/` — `.devin/wiki.json`
+  included — has changed on the default branch since `Commit`, or the result is not `generated`.
 - Absent means onboarding has never refreshed the wiki; the next `tech-lead` or `full` session
   regenerates it.
 - The section is not an artifact. Never count it in coverage.

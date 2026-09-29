@@ -89,15 +89,23 @@ DeepWiki is how the code itself gets documented, and it does not regenerate on i
 runs only when `knowledge-development` is in scope (`tech-lead` or `full`); for any other role, skip
 it and say nothing about DeepWiki.
 
-Read the `## DeepWiki` section of `.agents/skills/knowledge/knowledge-development/onboarding-status.md`,
-then compare it with the default branch:
-`git rev-parse origin/<default>` for the commit, and `git rev-parse origin/<default>:.devin/wiki.json`
-for the `wiki.json` blob (`absent` if there is no file).
+Read the `## DeepWiki` section of `.agents/skills/knowledge/knowledge-development/onboarding-status.md`
+and list what has changed on the default branch since its recorded commit, outside `.agents/`:
 
-- Both match the recorded row and its result is `generated` — skip regeneration, and say so.
-- Otherwise — the section is absent, either value differs, or the last result was not `generated` —
-  regenerate the wiki for this repository with Devin's wiki-generation tool (`devin_generate_wiki`).
-  Running `!onboarding` is the request to regenerate it. Wait for the tool to finish.
+```bash
+git diff --name-only <recorded-commit> origin/<default> -- . ':(exclude).agents/'
+```
+
+`.devin/wiki.json` sits outside `.agents/`, so a change to it shows up here too. Knowledge and skill
+changes — including the merge request of an earlier onboarding — do not.
+
+- The list is empty and the recorded result is `generated` — skip regeneration, and say so.
+- Otherwise — the section is absent, the recorded commit is not in the local history (fetch it
+  first; regenerate if it is still missing), the list names any file, or the last result was not
+  `generated` — regenerate the wiki for this repository with Devin's wiki-generation tool
+  (`devin_generate_wiki`). Running `!onboarding` is the request to regenerate it. Wait for the tool
+  to finish, then record `git rev-parse origin/<default>` as the commit and
+  `git rev-parse origin/<default>:.devin/wiki.json` as the blob (`absent` if there is no file).
 - Not running in Devin, or the tool is unavailable — do not regenerate; the result is `skipped`.
 
 Record the date, commit, blob, result (`generated`, `skipped` or `failed`) and wiki link for step 9.

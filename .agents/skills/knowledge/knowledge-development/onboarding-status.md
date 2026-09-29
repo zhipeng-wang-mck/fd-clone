@@ -7,3 +7,9 @@
 | architecture-constraints.md | done | DOCUMENTED | | |
 | coding-standards.md | done | DOCUMENTED | | |
 | dev-environment-setup.md | done | DOCUMENTED | | `<CRATE_MIRROR_HOST>` (hostname, lines 18, 48, 51); `<CRATE_MIRROR_SHARED_TOKEN>` (credential, rotate, line 38) |
+
+## DeepWiki
+
+| Generated | Commit | wiki.json blob | Result | Wiki |
+|---|---|---|---|---|
+| 2026-09-29 | `f0d752ff3a78` | `2d07ee156b56` | generated | https://mckinsey-demo.devinenterprise.com/wiki/zhipeng-wang-mck/fd-clone |
