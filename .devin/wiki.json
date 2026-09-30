@@ -1,11 +1,11 @@
 {
   "repo_notes": [
     {
-      "content": "This wiki is the descriptive source of truth for how this application is currently built: structure, flows, dependencies, contracts and configuration. Document what exists in the code, never what ought to exist, and never imply that something existing is something approved.",
+      "content": "This wiki is the descriptive reference for how this application is currently built: structure, flows, dependencies, contracts and configuration. Document what exists in the code, never what ought to exist, and never imply that something existing is something approved. The code remains authoritative; where this wiki and the code disagree, the code is correct.",
       "author": "Agentic SDLC template"
     },
     {
-      "content": "Accuracy: name only files, modules, functions, types, flags and settings that exist in the code, and cite the file each one is in. Read a file in full before summarising it. Describe what the code does, not what comments, READMEs or other documents claim; where they disagree, follow the code and note the discrepancy. When a section of a page does not apply, say so in one sentence instead of listing everything that is absent.",
+      "content": "Accuracy: name only files, modules, functions, types, flags and settings that exist in the code, and cite the file each one is in; if you cannot confirm that a name exists, leave it out rather than guessing. Read a file in full before summarising it. Describe what the code does, not what comments, READMEs or other documents claim; where they disagree, follow the code and note the discrepancy. Copy versions exactly from the manifest and lock files; if a version is not in them, say so, and never estimate a version or mark one as implied. Every citation must point to lines that support the claim. Every diagram must agree with the page text and the code and use only real names. When a section of a page does not apply, say so in one sentence instead of listing everything that is absent.",
       "author": "Agentic SDLC template"
     },
     {
@@ -16,63 +16,230 @@
   "pages": [
     {
       "title": "Overview",
-      "purpose": "Document the technical profile of this repository: the languages and their versions, the frameworks and major libraries it is built on, the runtime target, the build and package tooling, the top-level directory layout and what each directory holds, and the entry points that start the application. Link each named area to its directory in the source tree.",
-      "parent": null
+      "purpose": "Document the technical profile of the repository: languages and versions, frameworks and major libraries, runtime target, build and package tooling, top-level directory layout, and the entry points that start the application.",
+      "parent": null,
+      "page_notes": [
+        {
+          "content": "Link each named area to its directory in the source tree, and say what each top-level directory holds.",
+          "author": "Agentic SDLC template"
+        }
+      ]
     },
     {
       "title": "Architecture",
-      "purpose": "Document the architectural shape of the system: the services or components it comprises, the responsibility of each, the boundaries between them, the deployment topology they run in, and the concurrency or runtime model (processes, threads, async runtimes, workers, queues) including any ordering or delivery guarantees. Include an architecture diagram. Describe the boundaries that exist in the code; do not judge whether they are correct or assess whether a dependency should be allowed.",
-      "parent": "Overview"
+      "purpose": "Document the architectural shape of the system: its components and their responsibilities, the boundaries between them, the deployment topology, and the concurrency or runtime model.",
+      "parent": "Overview",
+      "page_notes": [
+        {
+          "content": "Cover the concurrency or runtime model (processes, threads, async runtimes, workers, queues) and state explicitly what ordering or delivery is and is not guaranteed.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Include an architecture diagram. Where the system has several modes or paths (for example different output or execution modes), show each path separately and never route a path through a component it bypasses.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Describe the boundaries that exist in the code; do not judge whether they are correct or assess whether a dependency should be allowed.",
+          "author": "Agentic SDLC template"
+        }
+      ]
     },
     {
       "title": "Core Components / Modules",
-      "purpose": "Document each significant module or package: its responsibility, its public entry points, the other modules it calls, and the modules that call it. Name the directory for each. Cover every top-level source module rather than only the largest ones.",
-      "parent": "Architecture"
+      "purpose": "Document every top-level source module or package: its responsibility, directory, public entry points, the modules it calls, and the modules that call it.",
+      "parent": "Architecture",
+      "page_notes": [
+        {
+          "content": "Cover every top-level source module rather than only the largest ones. Public entry points must be real function, type or class names from the code.",
+          "author": "Agentic SDLC template"
+        }
+      ]
     },
     {
       "title": "Data Flow / Processing Flow",
-      "purpose": "Document how data moves through the system end to end: entry points (HTTP requests, events, scheduled jobs, batch inputs, command-line invocations, files), the synchronous and asynchronous hops between components, the queues, topics or channels involved, the decision points along the way (validation, matching, filtering, routing) with the order they are applied in and their precedence and defaults, and where data comes to rest or leaves the system. Include a sequence or flow diagram for the primary path, and describe the significant error, retry and compensation paths on that path; general error handling belongs to the Error Handling & Observability page.",
-      "parent": "Architecture"
+      "purpose": "Document how data moves through the system end to end: entry points, the hops between components, the queues or channels involved, the decision points along the way, and where data comes to rest or leaves the system.",
+      "parent": "Architecture",
+      "page_notes": [
+        {
+          "content": "Consider every kind of entry point: HTTP requests, events, scheduled jobs, batch inputs, command-line invocations and files. Distinguish synchronous from asynchronous hops.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Include a numbered list of the decision points (validation, matching, filtering, routing) in the exact order the code applies them, each citing the function that implements it, with its precedence and defaults.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Include a sequence or flow diagram for the primary path. Where there are several modes or output paths, show each path separately and never route a path through a component it bypasses.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Describe the significant error, retry and compensation paths on these flows only; general error handling belongs to the Error Handling & Observability page.",
+          "author": "Agentic SDLC template"
+        }
+      ]
     },
     {
       "title": "Dependencies",
-      "purpose": "Document what this repository depends on and what depends on it: internal services it calls and the interfaces it exposes to others, external and third-party systems it integrates with, platform services it relies on (databases, caches, message brokers, identity providers), and the notable third-party libraries with the versions pinned in the manifest and lock files. Report versions exactly as found in the code.",
-      "parent": "Architecture"
+      "purpose": "Document what the repository depends on and what depends on it: internal services, external and third-party systems, platform services, and notable third-party libraries with their pinned versions.",
+      "parent": "Architecture",
+      "page_notes": [
+        {
+          "content": "Consider platform services such as databases, caches, message brokers and identity providers, and the interfaces the repository exposes to others.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Include a table of the notable third-party libraries with columns: name, version in the manifest, version in the lock file, and the modules that use it. Report versions exactly as found, and name only modules that actually import the library.",
+          "author": "Agentic SDLC template"
+        }
+      ]
     },
     {
       "title": "Storage / Database Layer",
-      "purpose": "Document the persistent stores this repository owns or reads: each datastore and its purpose, the main entities and their relationships, the schema as defined by migrations or model definitions, the key indexes, and how migrations are applied. Include an entity-relationship diagram where a relational schema exists. Delete this page if the repository has no persistence layer.",
-      "parent": "Architecture"
+      "purpose": "Document the persistent stores the repository owns or reads: each datastore and its purpose, the main entities and relationships, the schema, key indexes, and how migrations are applied.",
+      "parent": "Architecture",
+      "page_notes": [
+        {
+          "content": "Derive the schema from migrations or model definitions. Include an entity-relationship diagram where a relational schema exists.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Delete this page if the repository has no persistence layer.",
+          "author": "Agentic SDLC template"
+        }
+      ]
     },
     {
       "title": "APIs / Interfaces",
-      "purpose": "Document every interface this repository exposes and consumes. For services: REST, GraphQL or gRPC endpoints, their request and response shapes, status codes and error model, event and message schemas, and how versioning is implemented. For command-line tools and libraries: every command, flag and positional argument with its default, exit codes, public library APIs, and file formats read or written. Derive this from OpenAPI/Swagger, protobuf, schema files or argument definitions in the repository and link to them. Where no specification exists, derive it from the handler or parser code and state that it was inferred from code. List every item; do not sample.",
-      "parent": "Overview"
+      "purpose": "Document the interfaces the repository exposes and consumes and the contracts that apply to them: API styles, request and response conventions, error model, versioning, and for command-line tools and libraries the invocation syntax, exit codes, public APIs and file formats.",
+      "parent": "Overview",
+      "page_notes": [
+        {
+          "content": "Derive this from OpenAPI/Swagger, protobuf, schema files or argument definitions in the repository and link to them. Where no specification exists, derive it from the handler or parser code and state that it was inferred from code.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Keep this page to contracts and conventions; the complete item-by-item listing belongs to the Interface Reference page.",
+          "author": "Agentic SDLC template"
+        }
+      ]
+    },
+    {
+      "title": "Interface Reference",
+      "purpose": "List every interface item the repository exposes: every endpoint or message for services, and every command, flag and option for command-line tools.",
+      "parent": "APIs / Interfaces",
+      "page_notes": [
+        {
+          "content": "Take the items from the route, handler, schema or argument definitions in the code. List every item in the definitions; do not sample or summarise.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "For services, use a table with columns: method or type, path or topic, request, response, and the code that handles it. For command-line tools, use a table with columns: long name, short name, argument, default, and description.",
+          "author": "Agentic SDLC template"
+        }
+      ]
     },
     {
       "title": "Security",
-      "purpose": "Document the security controls as implemented. Cover each that exists: how callers are authenticated and where tokens or sessions are validated; how authorization decisions are made and enforced; input validation and rejection rules; output encoding and injection defences (HTML/XSS, SQL, shell and command, terminal, path traversal); CSRF, CORS, security headers and rate limiting; how subprocesses are spawned and their arguments built; how secrets and cryptographic material are obtained at runtime; and supply-chain controls in the build (dependency pinning, automated updates, CI permissions, artifact signing or attestation). Name the middleware, filters, guards or functions involved and link to them, and reference any security policy file. Describe the mechanism only; never include secret values. Delete this page only if none of these controls exist.",
-      "parent": "Overview"
+      "purpose": "Document the security controls as implemented, including authentication and authorization where they exist, input and output protections, subprocess safety, secret handling, and supply-chain controls in the build.",
+      "parent": "Overview",
+      "page_notes": [
+        {
+          "content": "Include a table with columns: control, threat it addresses, and where it is implemented. Name the middleware, filters, guards or functions involved and link to them.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Cover each that exists: how callers are authenticated and where tokens or sessions are validated; how authorization decisions are made and enforced; input validation and defensive checks that reject unsafe or misleading input; output encoding and injection defences (HTML/XSS, SQL, shell and command, terminal, path traversal); protection against user-supplied values being interpreted as options or arguments; CSRF, CORS, security headers and rate limiting; how subprocesses are spawned, how their arguments are built, and whether a shell is involved; and how secrets and cryptographic material are obtained at runtime.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "For supply-chain controls, cover dependency pinning and lock-file-enforced builds, automated dependency updates, CI token permissions, pinned third-party actions, and artifact signing or attestation. Reference any security policy file.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Describe the mechanism only; never include secret values. Delete this page only if none of these controls exist.",
+          "author": "Agentic SDLC template"
+        }
+      ]
     },
     {
       "title": "Error Handling & Observability",
-      "purpose": "Document how the application handles and surfaces failures as implemented: the error types it defines, where errors are raised, caught, wrapped or translated, how they propagate across component boundaries, what callers receive (error responses, status codes, exit codes, messages), retry, timeout and fallback behaviour, and signal, cancellation and shutdown handling. Then document observability: logging (library, levels, format and destination), metrics, distributed tracing and correlation IDs, and error-reporting or APM integrations, naming the libraries and the code that configures them. If there is no logging, metrics or tracing, say so in one sentence.",
-      "parent": "Overview"
+      "purpose": "Document how the application handles and surfaces failures, and how it can be observed: error types and propagation, what callers receive, shutdown and signal handling, and logging, metrics and tracing.",
+      "parent": "Overview",
+      "page_notes": [
+        {
+          "content": "Cover the error types defined; where errors are raised, caught, wrapped or translated; how they propagate across component boundaries; how results from sub-operations are combined into one outcome; retry, timeout and fallback behaviour; partial-output and broken-pipe handling; and where signal, interrupt, cancellation and shutdown handlers are installed and what they do.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Include a table with columns: failure, what the caller or user sees, and the status or exit code returned.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "For observability, cover logging (library, levels, format and destination), metrics, distributed tracing and correlation IDs, and error-reporting or APM integrations, naming the libraries and the code that configures them. If there is no logging, metrics or tracing, say so in one sentence.",
+          "author": "Agentic SDLC template"
+        }
+      ]
     },
     {
       "title": "Build, Release & Deployment",
-      "purpose": "Document how this repository is built, released and deployed: every CI/CD job and stage in order from trigger to publish, the container or artifact build, how versions are bumped and releases are cut, which release steps are automated and which are manual, the registries, stores or package managers artifacts are published to, the environments it deploys to, the infrastructure-as-code that defines its runtime, and the health and readiness hooks it exposes. Derive this from pipeline definitions, Dockerfiles, IaC, release scripts and release checklists in the repository. Delete this page if build and deployment are defined entirely outside this repository.",
-      "parent": "Overview"
+      "purpose": "Document how the repository is built, released and deployed: the CI/CD pipeline, artifact and container builds, versioning and release steps, where artifacts are published, target environments, infrastructure-as-code, and health and readiness hooks.",
+      "parent": "Overview",
+      "page_notes": [
+        {
+          "content": "Include a table of every job in the pipeline definitions with columns: job, trigger or condition, the jobs it depends on, and what it does. Any pipeline diagram must follow the dependencies declared in the pipeline files.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Describe how versions are bumped and releases are cut, which release steps are automated and which are manual, and the registries, stores or package managers artifacts are published to.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Derive this from pipeline definitions, Dockerfiles, IaC, release scripts and release checklists in the repository. Delete this page if build and deployment are defined entirely outside this repository.",
+          "author": "Agentic SDLC template"
+        }
+      ]
     },
     {
       "title": "Configuration",
-      "purpose": "Document how this application is configured: the configuration files it reads at build time and at runtime (including per-user and per-directory files) and their precedence, the environment variables and what each one controls, runtime and compile-time feature flags and their defaults, and which settings differ between environments or platforms. List configuration keys by name with their purpose and default, never their real values.",
-      "parent": "Overview"
+      "purpose": "Document how the application is configured: environment variables, configuration files and their precedence, feature flags and their defaults, and settings that differ between environments or platforms.",
+      "parent": "Overview",
+      "page_notes": [
+        {
+          "content": "Include a table of environment variables with columns: name, what it controls, default, and where it is read. Find them by searching the code for every environment variable read.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Include a table of configuration files read at build time and at runtime, including per-user and per-directory files, with columns: path, format, and precedence.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Include a table of runtime and compile-time feature flags with columns: name and default.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "List configuration keys by name with their purpose and default, never their real values.",
+          "author": "Agentic SDLC template"
+        }
+      ]
     },
     {
       "title": "Unit Testing",
-      "purpose": "Document the test suites present in this repository: the frameworks and runners in use, where tests live (separate test directories and tests inline in source files) and how they are named, how fixtures, mocks and test data are provided, tests that need a specific platform, service or privilege, and the commands that execute them. Describe testing as it exists. Coverage thresholds and mandatory test types are policy and belong to the knowledge-testing skill, not this page. Delete this page if the repository has no meaningful test suite yet.",
-      "parent": "Overview"
+      "purpose": "Document the test suites in the repository: frameworks and runners, where tests live and how they are named, fixtures, mocks and test data, and the commands that run them.",
+      "parent": "Overview",
+      "page_notes": [
+        {
+          "content": "Cover separate test directories and list the source files that contain inline tests. Note tests that need a specific platform, service or privilege.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Describe testing as it exists. Coverage thresholds and mandatory test types are policy and belong to the knowledge-testing skill, not this page.",
+          "author": "Agentic SDLC template"
+        },
+        {
+          "content": "Delete this page if the repository has no meaningful test suite yet.",
+          "author": "Agentic SDLC template"
+        }
+      ]
     }
   ]
 }
