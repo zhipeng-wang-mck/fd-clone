@@ -5,7 +5,7 @@
       "author": "Agentic SDLC template"
     },
     {
-      "content": "Accuracy: name only files, modules, functions, types, flags and settings that exist in the code, and cite the file each one is in; if you cannot confirm that a name exists, leave it out rather than guessing. Read a file in full before summarising it. Describe what the code does, not what comments, READMEs or other documents claim; where they disagree, follow the code and note the discrepancy. Copy versions exactly from the manifest and lock files; if a version is not in them, say so, and never estimate a version or mark one as implied. Every citation must point to lines that support the claim. Every diagram must agree with the page text and the code and use only real names. When a section of a page does not apply, say so in one sentence instead of listing everything that is absent.",
+      "content": "Accuracy: name only files, modules, functions, types, flags and settings that exist in the code, and cite the file each one is in; if you cannot confirm that a name exists, leave it out rather than guessing. Read a file in full before summarising it. Describe what the code does, not what comments, READMEs or other documents claim; where they disagree, follow the code and note the discrepancy. Copy versions exactly from the manifest and lock files; if a version is not in them, say so, and never estimate a version or mark one as implied. Every citation must point to lines that support the claim. When a fact cannot be confirmed from the code, leave the table cell or item empty, or state that it was not found, rather than filling it with an assumption. Every diagram must agree with the page text and the code and use only real names. When a section of a page does not apply, say so in one sentence instead of listing everything that is absent.",
       "author": "Agentic SDLC template"
     },
     {
@@ -36,7 +36,7 @@
     },
     {
       "title": "Dependencies",
-      "purpose": "Document what this repository depends on and what depends on it: internal services it calls and the interfaces it exposes to others, external and third-party systems it integrates with, and platform services it relies on (databases, caches, message brokers, identity providers). Include a table of the notable third-party libraries with columns: name, version in the manifest, version in the lock file, and the modules that use it. Report versions exactly as found in the code, and name only modules that actually import the library.",
+      "purpose": "Document what this repository depends on and what depends on it: internal services it calls and the interfaces it exposes to others, external and third-party systems it integrates with, and platform services it relies on (databases, caches, message brokers, identity providers). Include a table of the notable third-party libraries with columns: name, version in the manifest, and version in the lock file. Report versions exactly as found in the code.",
       "parent": "Architecture"
     },
     {
@@ -71,7 +71,7 @@
     },
     {
       "title": "Configuration",
-      "purpose": "Document how this application is configured. Include three tables: environment variables, with columns name, what it controls, default, and where it is read, found by searching the code for every environment variable read; configuration files read at build time and at runtime (including per-user and per-directory files), with columns path, format, and precedence; and runtime and compile-time feature flags, with columns name and default. Also describe which settings differ between environments or platforms. List configuration keys by name with their purpose and default, never their real values.",
+      "purpose": "Document how this application is configured. Include three tables: environment variables, with columns name, what it controls, default, and the file and line that reads it (leave the cell empty if you cannot cite the line), found by searching the code for every environment variable read; configuration files read at build time and at runtime (including per-user and per-directory files), with columns path, format, and precedence; and runtime and compile-time feature flags, with columns name and default. Also describe which settings differ between environments or platforms. List configuration keys by name with their purpose and default, never their real values.",
       "parent": "Overview"
     },
     {
