@@ -58,8 +58,8 @@ Those tables are the only place that list lives — read them rather than a copy
 **KN-04 development has no `★` artifacts.** Architecture, dependencies and API contracts are read
 from the codebase rather than uploaded, so delivery work can start without a tech lead providing
 anything. Its artifacts hold only what the team *requires*, and not every team has constraints to
-state. For how that codebase documentation is generated, see
-[`.devin/README.md`](../../../.devin/README.md).
+state. That codebase documentation is DeepWiki, generated with its default page planning and
+triggered once by the onboarding agent if the repository has none (`onboard-knowledge`, step 3).
 
 ## Onboarding status
 
@@ -97,22 +97,23 @@ ready.
 
 ### DeepWiki section (`knowledge-development` only)
 
-Below its artifact table, `knowledge-development`'s file carries the last DeepWiki refresh the
-onboarding agent ran for the repository — one row, rewritten each time.
+Below its artifact table, `knowledge-development`'s file records whether the repository has a
+DeepWiki — one row, written by the onboarding agent.
 
 ```markdown
 ## DeepWiki
 
-| Generated | Commit | wiki.json blob | Result | Wiki |
-|---|---|---|---|---|
-| 2026-09-29 | `f0d752ff3a78` | `2d07ee156b56` | generated | https://<devin-host>/wiki/<owner>/<repo> |
+| Date | Commit | Result | Wiki |
+|---|---|---|---|
+| 2026-09-29 | `f0d752ff3a78` | requested | https://<devin-host>/wiki/<owner>/<repo> |
 ```
 
-- `Commit` is the default-branch commit the wiki was generated from; `wiki.json blob` is
-  `git rev-parse <commit>:.devin/wiki.json`, or `absent`. Both are the first 12 characters.
-- `Result` is `generated`, `skipped` (not running in Devin) or `failed` (with the error in the
-  closing message). A session regenerates when anything outside `.agents/` — `.devin/wiki.json`
-  included — has changed on the default branch since `Commit`, or the result is not `generated`.
-- Absent means onboarding has never refreshed the wiki; the next `tech-lead` or `full` session
-  regenerates it.
+- `Commit` is the default-branch commit generation was started from, first 12 characters; empty
+  for `exists`.
+- `Result` is `requested` (onboarding triggered generation and did not wait for it to finish),
+  `exists` (a wiki was already there, so nothing was triggered), `skipped` (not running in Devin) or
+  `failed` (the tool rejected the request, with the error in the closing message).
+- DeepWiki only needs triggering once. A row with `requested` or `exists` means later sessions do not
+  trigger it again; `skipped`, `failed` or an absent row means the next `tech-lead` or `full`
+  session checks for a wiki and triggers one if there is none.
 - The section is not an artifact. Never count it in coverage.

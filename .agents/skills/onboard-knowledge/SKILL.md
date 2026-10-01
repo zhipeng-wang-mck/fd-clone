@@ -83,38 +83,43 @@ missing: ask. State the confirmed role and its domains back to the user before g
   domains back to the user.
 - **Revisit if:** never. A different role is a different session.
 
-### 3. Refresh DeepWiki
-DeepWiki is how the code itself gets documented, and it does not regenerate on its own when
-`.devin/wiki.json` or the code changes. The code is the development domain's concern, so this step
-runs only when `knowledge-development` is in scope (`tech-lead` or `full`); for any other role, skip
-it and say nothing about DeepWiki.
+### 3. Make sure DeepWiki exists
+DeepWiki is how the code itself gets documented. It only needs triggering once per repository; this
+step triggers it when nothing shows it has been. The code is the development domain's concern, so
+this step runs only when `knowledge-development` is in scope (`tech-lead` or `full`); for any other
+role, skip it and say nothing about DeepWiki.
 
-Read the `## DeepWiki` section of `.agents/skills/knowledge-development/onboarding-status.md`
-and list what has changed on the default branch since its recorded commit, outside `.agents/`:
+Check, in this order, and stop at the first that applies:
 
-```bash
-git diff --name-only <recorded-commit> origin/<default> -- . ':(exclude).agents/'
-```
+1. **The status file already records it.** The `## DeepWiki` section of
+   `.agents/skills/knowledge-development/onboarding-status.md` has a result of `requested` or
+   `exists` — do not trigger. Tell the user the date and wiki link it records.
+2. **A wiki already exists.** Devin's repository documentation tool (`read_wiki_structure`) returns
+   pages for this repository — do not trigger. The result is `exists`.
+3. **Neither** — trigger generation with Devin's wiki-generation tool (`devin_generate_wiki`) and
+   DeepWiki's default page planning, as an asynchronous request: fire it and move on. Generation can
+   take hours; this session never waits for it, polls it or checks back on it. Once the tool has
+   accepted the request, record `git rev-parse origin/<default>` as the commit and carry on with
+   step 4 straight away. If the tool does not return until the wiki is finished, start it from a
+   separate Devin session instead, so this session is not held up, and carry on.
+   - The tool accepted the request — the result is `requested`. Whether generation then succeeds is
+     checked on the wiki, not in this session.
+   - The tool rejected the request — the result is `failed`, with its error.
 
-`.devin/wiki.json` sits outside `.agents/`, so a change to it shows up here too. Knowledge and skill
-changes — including the merge request of an earlier onboarding — do not.
+A recorded `failed` or `skipped` is not a record that the wiki exists, so the checks continue past
+check 1. Not running in Devin, or the tools are unavailable — do not trigger; the result is
+`skipped`.
 
-- The list is empty and the recorded result is `generated` — skip regeneration, and say so.
-- Otherwise — the section is absent, the recorded commit is not in the local history (fetch it
-  first; regenerate if it is still missing), the list names any file, or the last result was not
-  `generated` — regenerate the wiki for this repository with Devin's wiki-generation tool
-  (`devin_generate_wiki`). Running `!onboarding` is the request to regenerate it. Wait for the tool
-  to finish, then record `git rev-parse origin/<default>` as the commit and
-  `git rev-parse origin/<default>:.devin/wiki.json` as the blob (`absent` if there is no file).
-- Not running in Devin, or the tool is unavailable — do not regenerate; the result is `skipped`.
+Record the date, commit (empty for `exists`), result (`requested`, `exists`, `skipped` or `failed`)
+and wiki link for step 9.
 
-Record the date, commit, blob, result (`generated`, `skipped` or `failed`) and wiki link for step 9.
-
-- **Never:** block the audit on this step — a failed or skipped refresh is recorded and the session
-  carries on; regenerate for a branch other than the default branch.
+- **Never:** trigger when the status file records `requested` or `exists`, or when a wiki already
+  exists; wait for generation to finish, poll its progress, or block the audit on this step; record `requested` as
+  generated or done; create a `.devin/wiki.json` to steer the pages; trigger for a branch other than
+  the default branch.
 - **Done when:** the role is `product-owner` or `qa`, so this step does not apply; or, for
-  `tech-lead` and `full`, the wiki was regenerated, found current, skipped or failed — and the user
-  has been told which.
+  `tech-lead` and `full`, the wiki was found already recorded, found existing, requested, skipped or
+  failed — and the user has been told which.
 
 ### 4. Read prior status
 Read `.agents/skills/<skill>/onboarding-status.md` for each in-scope domain.
@@ -275,8 +280,7 @@ Three writes, then one merge request.
   whole, keeping rows this session did not work on with their cells unchanged. Create it if it does
   not exist.
   In `knowledge-development`'s file, also write the `## DeepWiki` section with the values step 3
-  recorded, whenever step 3 regenerated, skipped or failed; keep it unchanged when the wiki was found
-  current or step 3 did not run.
+  recorded; keep it unchanged when step 3 did not run or stopped at check 1.
 - **Merge request** — one, containing all of the above. Write the description with the
   `draft-merge-request-descriptions` skill.
 
@@ -301,7 +305,6 @@ Post the closing message described under Output.
 - Each in-scope `.agents/skills/<skill>/SKILL.md` — the artifact table is the checklist.
 - [`.agents/skills/knowledge/README.md`](../knowledge/README.md) — the `onboarding-status.md` format,
   including its DeepWiki section, shared with anything else that reads those files.
-- `.devin/wiki.json` — steers which pages DeepWiki generates.
 - `knowledge-source-converter` (UT-01) — document conversion.
 - `draft-merge-request-descriptions` — the MR description.
 - `.agents/skills/AUTHORING_STANDARD.md` — the structure any edited `SKILL.md` must keep.
@@ -324,7 +327,9 @@ converted `reference/` files and `SKILL.md` edits, as one merge request.
 5. Redactions per file: line, category and placeholder — never the value. Live secrets come first,
    under **Live secrets to rotate**, with the source document each appeared in.
 6. Remaining gaps by tier, numbered by priority under each tier's test question.
-7. DeepWiki, when step 3 ran: its result, the commit it was generated from and the wiki link.
+7. DeepWiki, when step 3 ran: its result, the commit generation was started from (for
+   `requested`) and the wiki link. For `requested`, say that generation can take hours and the wiki
+   link shows when it is finished.
 8. The MR link, when there is one.
 
 There is no report file. Out-of-scope domains appear nowhere in the output.

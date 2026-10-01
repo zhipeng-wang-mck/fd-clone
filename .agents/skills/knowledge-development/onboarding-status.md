@@ -10,6 +10,6 @@
 
 ## DeepWiki
 
-| Generated | Commit | wiki.json blob | Result | Wiki |
-|---|---|---|---|---|
-| 2026-09-29 | `f0d752ff3a78` | `2d07ee156b56` | generated | https://mckinsey-demo.devinenterprise.com/wiki/zhipeng-wang-mck/fd-clone |
+| Date | Commit | Result | Wiki |
+|---|---|---|---|
+| 2026-09-29 | `f0d752ff3a78` | exists | https://mckinsey-demo.devinenterprise.com/wiki/zhipeng-wang-mck/fd-clone |
